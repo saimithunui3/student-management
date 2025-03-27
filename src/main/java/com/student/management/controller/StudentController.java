@@ -18,34 +18,36 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
 
-    // 1. View all students
-    /*@GetMapping("/")
-    public String viewHomePage(Model model) {
-        model.addAttribute("listStudents", studentService.getAllStudents());
-        return "index";
-    }*/
-    /*@GetMapping("/home")
+    // Landing page at /home
+    @GetMapping("/home")
     public String showHomePage() {
         return "home";
-    }*/
+    }
 
+    // Redirect root URL to /home
     @GetMapping("/")
     public String viewRoot() {
         return "redirect:/home";
     }
 
-
-
-    // 2. Show form to add new student
+    // Show form to add new student
     @GetMapping("/showNewStudentForm")
     public String showNewStudentForm(Model model) {
         model.addAttribute("student", new Student());
         return "new_student";
     }
 
-    // 3. Save student to DB
+    // Save student to DB
+    @PostMapping("/saveStudent")
+    public String saveStudent(@Valid @ModelAttribute("student") Student student, BindingResult result) {
+        if (result.hasErrors()) {
+            return (student.getId() == null) ? "new_student" : "update_student";
+        }
+        studentService.saveStudent(student);
+        return "redirect:/page/1";
+    }
 
-    // 4. Show form to update student
+    // Show form to update student
     @GetMapping("/showFormForUpdate/{id}")
     public String showFormForUpdate(@PathVariable(value = "id") Long id, Model model) {
         Student student = studentService.getStudentById(id);
@@ -53,17 +55,14 @@ public class StudentController {
         return "update_student";
     }
 
-    // 5. Delete student
+    // Delete student
     @GetMapping("/deleteStudent/{id}")
     public String deleteStudent(@PathVariable(value = "id") Long id) {
         studentService.deleteStudentById(id);
-        return "redirect:/";
-    }
-    // Redirect root URL to page 1
-    @GetMapping("/")
-    public String viewHomePage() {
         return "redirect:/page/1";
     }
+
+    // List with pagination
     @GetMapping("/page/{pageNo}")
     public String findPaginated(@PathVariable(value = "pageNo") int pageNo, Model model) {
         int pageSize = 5;
@@ -78,20 +77,12 @@ public class StudentController {
 
         return "index";
     }
-    @PostMapping("/saveStudent")
-    public String saveStudent(@Valid @ModelAttribute("student") Student student, BindingResult result) {
-        if (result.hasErrors()) {
-            return (student.getId() == null) ? "new_student" : "update_student";
-        }
-        studentService.saveStudent(student);
-        return "redirect:/";
-    }
+
+    // Search students
     @GetMapping("/search")
     public String searchStudents(@RequestParam("keyword") String keyword, Model model) {
         List<Student> results = studentService.searchStudents(keyword);
         model.addAttribute("listStudents", results);
         return "index";
     }
-
 }
-
