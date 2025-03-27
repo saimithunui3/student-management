@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Student Management</title>
+</head>
+<body>
+<h1>Student List</h1>
+
+<a href="/showNewStudentForm">Add New Student</a>
+<br><br>
+<form th:action="@{/search}" method="get">
+    <input type="text" name="keyword" placeholder="Search by name"/>
+    <button type="submit">Search</button>
+</form>
+<br/>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="student : ${listStudents}">
+        <td th:text="${student.firstName}"></td>
+        <td th:text="${student.lastName}"></td>
+        <td th:text="${student.email}"></td>
+        <td>
+            <a th:href="@{'/showFormForUpdate/' + ${student.id}}">Edit</a> |
+            <a th:href="@{'/deleteStudent/' + ${student.id}}"
+               onclick="return confirm('Are you sure?')">Delete</a>
+        </td>
+    </tr>
+    <div>
+        <span>Page <span th:text="${currentPage}"></span> of <span th:text="${totalPages}"></span></span><br><br>
+
+        <div th:if="${totalPages > 1}">
+            <ul>
+                <li th:if="${currentPage > 1}">
+                    <a th:href="@{'/page/' + ${currentPage - 1}}">Previous</a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(1, totalPages)}">
+                    <a th:href="@{'/page/' + ${i}}" th:text="${i}"
+                       th:classappend="${i == currentPage} ? 'active'"></a>
+                </li>
+                <li th:if="${currentPage < totalPages}">
+                    <a th:href="@{'/page/' + ${currentPage + 1}}">Next</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    </tbody>
+</table>
+</body>
+</html>
