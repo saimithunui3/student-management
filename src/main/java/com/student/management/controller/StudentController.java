@@ -24,10 +24,10 @@ public class StudentController {
         model.addAttribute("listStudents", studentService.getAllStudents());
         return "index";
     }*/
-    @GetMapping("/home")
+    /*@GetMapping("/home")
     public String showHomePage() {
         return "home";
-    }
+    }*/
 
     @GetMapping("/")
     public String viewRoot() {
