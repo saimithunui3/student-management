@@ -50,5 +50,9 @@ public class StudentRestController {
     public void deleteStudent(@PathVariable Long id) {
         studentService.deleteStudentById(id);
     }
-    
+    @GetMapping("/ping")
+    public String ping() {
+        return "pong";
+    }
+
 }

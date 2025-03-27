@@ -24,6 +24,17 @@ public class StudentController {
         model.addAttribute("listStudents", studentService.getAllStudents());
         return "index";
     }*/
+    @GetMapping("/home")
+    public String showHomePage() {
+        return "home";
+    }
+
+    @GetMapping("/")
+    public String viewRoot() {
+        return "redirect:/home";
+    }
+
+
 
     // 2. Show form to add new student
     @GetMapping("/showNewStudentForm")
